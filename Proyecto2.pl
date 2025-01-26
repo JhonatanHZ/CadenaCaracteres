@@ -26,12 +26,38 @@ checkEquality([], []).
 checkEquality([X|XS], [Y|YS]):- X == Y, checkEquality(XS, YS).
 
 %Parte 3
-%Idea de implementacion:
-%Recibimos el string y lo convertimos a una lista de códigos ASCII. Invertimos la lista de ASCII. Invertimos cada elemento.
-%Unificamos los elementos invertidos en un string y retornamos.
+
 
 action(0, S, Result):- decode(S, Result).
 action(1, S, Result):- encode(S, Result).
+
+decode(S, DecodedString):- atom_chars(S, ListaChar), reverse(ListaChar, RListaChar), convertASCIIToChar(RListaChar, DecodedString). 
+
+convertASCIIToChar([], '') :- !.
+convertASCIIToChar([X, Y, Z | Remainder], Cadena) :-
+    atom_chars(S, [X, Y, Z]),
+    atom_number(S, Number),
+    ( checkRange(Number) ->
+        char_code(Char, Number),
+        convertASCIIToChar(Remainder, RemainderString),
+        atom_concat(Char, RemainderString, Cadena)
+    ;
+        atom_chars(S2, [X, Y]),
+        atom_number(S2, Number2),
+        checkRange(Number2),
+        char_code(Char2, Number2),
+        convertASCIIToChar([Z | Remainder], RemainderString2),
+        atom_concat(Char2, RemainderString2, Cadena)
+    ).
+
+convertASCIIToChar([X, Y], Cadena) :- 
+    atom_chars(S, [X, Y]),
+    atom_number(S, Number),
+    checkRange(Number),
+    char_code(Char, Number),
+    Cadena = Char.
+
+checkRange(Number) :- Number >= 32, Number =< 126.
 
 encode(S, EncodedString):- atom_codes(S, C), reverse(C, R), maplist(invertASCII, R, ASCIIList), atomics_to_string(ASCIIList, EncodedString).
 
