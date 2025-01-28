@@ -37,34 +37,27 @@ convertASCIIToChar([], '') :- !.
 convertASCIIToChar([X, Y, Z | Remainder], Cadena) :-
     atom_chars(S, [X, Y, Z]),
     atom_number(S, Number),
-    ( checkRange(Number) ->
-        char_code(Char, Number),
-        convertASCIIToChar(Remainder, RemainderString),
-        atom_concat(Char, RemainderString, Cadena)
-    ;
-        atom_chars(S2, [X, Y]),
-        atom_number(S2, Number2),
-        checkRange(Number2),
-        char_code(Char2, Number2),
-        convertASCIIToChar([Z | Remainder], RemainderString2),
-        atom_concat(Char2, RemainderString2, Cadena)
-    ).
+    checkRange(Number), 
+    !,
+    char_code(Char, Number),
+    convertASCIIToChar(Remainder, RemainderString),
+    atom_concat(Char, RemainderString, Cadena).
 
-convertASCIIToChar([X, Y], Cadena) :- 
+convertASCIIToChar([X, Y | Remainder], Cadena):- 
     atom_chars(S, [X, Y]),
     atom_number(S, Number),
-    checkRange(Number),
     char_code(Char, Number),
-    Cadena = Char.
+    convertASCIIToChar(Remainder, RemainderString),
+    atom_concat(Char, RemainderString, Cadena).
 
-checkRange(Number) :- Number >= 32, Number =< 126.
+checkRange(Number) :- Number >= 100, Number =< 122.
 
 encode(S, EncodedString):- atom_codes(S, C), reverse(C, R), maplist(invertASCII, R, ASCIIList), atomics_to_string(ASCIIList, EncodedString).
 
 invertNumber(N, Invertido) :-
-    number_codes(N, Codigos),
+    atom_codes(N, Codigos),
     reverse(Codigos, CodigosInvertidos),
-    number_codes(Invertido, CodigosInvertidos).
+    atom_codes(Invertido, CodigosInvertidos).
 
 invertASCII(Codigo, CodigoInvertido) :-
     invertNumber(Codigo, CodigoInvertido).
