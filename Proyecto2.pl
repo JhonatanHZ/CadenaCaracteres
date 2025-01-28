@@ -61,3 +61,25 @@ invertNumber(N, Invertido) :-
 
 invertASCII(Codigo, CodigoInvertido) :-
     invertNumber(Codigo, CodigoInvertido).
+
+%Parte 4 
+
+subsequence(S, C, Result, Len):-
+    atom_chars(S, FirstString),
+    atom_chars(C, SecondString),
+    findSequence(FirstString, SecondString, FindSequence),
+    atom_chars(Result, FindSequence),
+    length(FindSequence, Len).
+
+findSequence([], _, []).
+findSequence(_, [], []).
+findSequence([H|T1], [H|T2], [H|T]) :- findSequence(T1, T2, T), !.
+
+findSequence([H1|T1], [H2|T2], FindSequence) :-
+    ( H1 \= H2 ->
+        findSequence([H1|T1], T2, FindSequence1),
+        findSequence(T1, [H2|T2], FindSequence2),
+        length(FindSequence1, Len1),
+        length(FindSequence2, Len2),
+        (Len1 > Len2 -> FindSequence = FindSequence1; FindSequence = FindSequence2)
+    ).
