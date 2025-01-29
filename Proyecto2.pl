@@ -7,6 +7,10 @@ accumulator(Lista, K, Result) :- findall(Sub, sublist(Lista, K, Sub), Result).
 sublist(List, K, Sub) :- append(Sub, _, List), length(Sub, K).
 sublist([_|Tail], K, Sub) :- sublist(Tail, K, Sub).
 
+converter([], []).
+converter([H|T], [HAtom|TAtoms]) :- atom_chars(HAtom, H), converter(T, TAtoms).
+
+
 %Parte 2
 
 ocurrencias(S, Result):- atom_chars(S, Lista), takeSubstrings(Lista, 1, Result).
