@@ -1,5 +1,6 @@
 %Parte 1 
 
+k_period(S, K, []) :- K =< 0, !.
 k_period(S, K, Result) :-atom_chars(S, Lista), accumulator(Lista, K, CharLists), converter(CharLists, Result).
 
 accumulator(Lista, K, Result) :- findall(Sub, sublist(Lista, K, Sub), Result).
