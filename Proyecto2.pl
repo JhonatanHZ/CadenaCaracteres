@@ -1,6 +1,7 @@
 %Parte 1 
 
-k_period(S, K, []) :- K =< 0, !.
+k_period("", _, []):- !.
+k_period(_, K, []) :- K =< 0, !.
 k_period(S, K, Result) :-atom_chars(S, Lista), accumulator(Lista, K, CharLists), converter(CharLists, Result).
 
 accumulator(Lista, K, Result) :- findall(Sub, sublist(Lista, K, Sub), Result).
@@ -14,6 +15,7 @@ converter([H|T], [HAtom|TAtoms]) :- atom_chars(HAtom, H), converter(T, TAtoms).
 
 %Parte 2
 
+ocurrencias("", 0):- !.
 ocurrencias(S, Result):- atom_chars(S, Lista), takeSubstrings(Lista, 1, Result).
 
 takeSubstrings(Lista, K, Result) :- length(Lista, N), K =< N, findSubstrings(Lista, K, Subs), length(Subs, M), checkIntegerDivision(N, M, D), repeatSubstring(Subs, D, R), checkEquality(Lista, R), Result = D, !.
@@ -32,7 +34,8 @@ checkEquality([X|XS], [Y|YS]):- X == Y, checkEquality(XS, YS).
 
 %Parte 3
 
-
+action(_, "", ""):- !.
+action(O, _, ""):- O \= 0, O \= 1, !.
 action(0, S, Result):- decode(S, Result).
 action(1, S, Result):- encode(S, Result).
 
@@ -69,6 +72,8 @@ invertASCII(Codigo, CodigoInvertido) :-
 
 %Parte 4 
 
+subsequence("", _, "", 0):- !.
+subsequence(_, "", "", 0):- !. 
 subsequence(S, C, Result, Len):-
     atom_chars(S, FirstString),
     atom_chars(C, SecondString),
